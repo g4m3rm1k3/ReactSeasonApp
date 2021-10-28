@@ -1,17 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import reactDom from "react-dom";
+import SeasonDisplay from "./SeasonDisplay";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    this.state = { lat: "", errorMessage: "" };
+  }
+
+  componentDidMount() {
+    window.navigator.geolocation.getCurrentPosition(
+      (position) => this.setState({ lat: position.coords.latitude }),
+      (err) => this.setState({ errorMessage: err.message })
+    );
+  }
+
+  render() {
+    const latitude = this.state.lat;
+    const errorMessage = this.state.errorMessage;
+
+    return (
+      <div>
+        {latitude
+          ? `Latitude: ${latitude}`
+          : errorMessage
+          ? `Error: ${errorMessage}`
+          : "LOADING..."}
+      </div>
+    );
+  }
+}
+
+reactDom.render(<App />, document.querySelector("#root"));
